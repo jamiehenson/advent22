@@ -8,14 +8,10 @@ type Coordinate struct {
 	x, y int
 }
 
-func makeRange(min, max int, rev bool) []int {
-	a := make([]int, max-min)
+func makeRange(min, max int) []int { // Generates an inclusive range
+	a := make([]int, max-min+1)
 	for i := range a {
-		if rev {
-			a[i] = max - i
-		} else {
-			a[i] = min + i
-		}
+		a[i] = min + i
 	}
 	return a
 }
@@ -52,30 +48,30 @@ func main(file []byte) int {
 				continue
 			}
 
-			lv := calculateVisibility(tg, makeRange(0, x, false), []int{y}, x, y)
+			visible := calculateVisibility(tg, makeRange(0, x-1), []int{y}, x, y) // Left
 
-			if lv {
+			if visible {
 				v = append(v, Coordinate{x, y})
 				continue
 			}
 
-			rv := calculateVisibility(tg, makeRange(x, w-1, true), []int{y}, x, y)
+			visible = calculateVisibility(tg, makeRange(x+1, w-1), []int{y}, x, y) // Right
 
-			if rv {
+			if visible {
 				v = append(v, Coordinate{x, y})
 				continue
 			}
 
-			tv := calculateVisibility(tg, []int{x}, makeRange(0, y, false), x, y)
+			visible = calculateVisibility(tg, []int{x}, makeRange(0, y-1), x, y) // Top
 
-			if tv {
+			if visible {
 				v = append(v, Coordinate{x, y})
 				continue
 			}
 
-			bv := calculateVisibility(tg, []int{x}, makeRange(y, h-1, true), x, y)
+			visible = calculateVisibility(tg, []int{x}, makeRange(y+1, h-1), x, y) // Bottom
 
-			if bv {
+			if visible {
 				v = append(v, Coordinate{x, y})
 			}
 		}
